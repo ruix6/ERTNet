@@ -10,3 +10,7 @@
 |-  transformer.py  # File: model's code  
 |-  visualize.py  # File: visualize the signals  
 |-  evaluate.py  # File: evaluate the model contains accuracy, precision, recall, f1-score, confusion matrix, ROC curves
+
+
+  
+  If you want to run the entire project in its entirety, pull and then add the previously mentioned folders and the processed data.
