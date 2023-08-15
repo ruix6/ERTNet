@@ -11,7 +11,7 @@ from sklearn.utils import shuffle
 from sklearn.model_selection import train_test_split
 import keras
 from tensorflow.keras.utils import to_categorical
-import evaluate
+import utils.evaluate as evaluate
 from sklearn.model_selection import KFold
 
 from keras.callbacks import ReduceLROnPlateau, ModelCheckpoint, EarlyStopping
@@ -36,7 +36,9 @@ for train_index, test_index in kf.split(data):
 
     early_stop = EarlyStopping(monitor='val_loss', patience=50, verbose=1)
     #设置检查点, 保存最佳模型
-    checkpoint = ModelCheckpoint(filepath=f'model/model_best_within_eegnet_{i}.h5', monitor='val_accuracy', verbose=1, save_best_only=True, mode='max')
+    checkpoint = ModelCheckpoint(filepath=f'model/model_best_within_eegnet_{i}.h5', 
+                                 monitor='val_accuracy', verbose=1, save_best_only=True, 
+                                 mode='max')
     #导入模型
     model = EEGNet(nb_classes=4, Chans=32, Samples=512, dropoutRate=0.5, kernLength=64, F1=8, D=4, F2=32)
     model.compile(optimizer=keras.optimizers.adam_v2.Adam(learning_rate=0.001),#学习率可调, 与下面的学习率自动更改要同步
@@ -57,9 +59,13 @@ for train_index, test_index in kf.split(data):
     model_best.load_weights(f'model/model_best_within_eegnet_{i}.h5')
     pred = model_best.predict(test_data)
     #绘制ROC曲线图
-    evaluate.plot_ROC(test_labels, pred, labels=['Excited', 'Content', 'Angry', 'Sad'], colorlist=['navy', 'pink', 'cyan', 'darkviolet'], file=f'picture/roc_within_eegnet_{i}.jpg',dpi=300)#添加file参数可以将图片保存
+    evaluate.plot_ROC(test_labels, pred, labels=['Excited', 'Content', 'Angry', 'Sad'], 
+                      colorlist=['navy', 'pink', 'cyan', 'darkviolet'], 
+                      file=f'picture/roc_within_eegnet_{i}.jpg',dpi=300)#添加file参数可以将图片保存
     #绘制混淆矩阵
-    evaluate.plotHeatMap(np.argmax(test_labels,axis=1), np.argmax(pred,axis=1),ClassSet=['Excited', 'Content', 'Angry', 'Sad'], file=f'picture/hm_within_eegnet_{i}.jpg',dpi=300)#添加file参数可以将图片保存
+    evaluate.plotHeatMap(np.argmax(test_labels,axis=1), np.argmax(pred,axis=1),
+                         ClassSet=['Excited', 'Content', 'Angry', 'Sad'], 
+                         file=f'picture/hm_within_eegnet_{i}.jpg',dpi=300)#添加file参数可以将图片保存
     eegnet_logger.info(f"{i} Fold Training Epochs Accuracy: {list(hist.history['val_accuracy'])}")
     i = i + 1
 #打印模型参数
