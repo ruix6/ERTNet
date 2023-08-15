@@ -17,4 +17,4 @@
   
   If you want to run the entire project in its entirety, pull and then add the previously mentioned folders and the processed data.
   model framework:  
-  ![model framework](picture/model_framework.tif)
+  ![model framework](picture/model_framework.png)
